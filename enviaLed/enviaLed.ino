@@ -4,17 +4,11 @@ void setup() {
 
 void loop() {
 
-  Serial.write("1");
-  Serial.println("");
+  Serial.write("A");
+  // Serial.println("");
   delay(2500);
 
-  // Serial.write("0");
-  // delay(2500);
-  
-  // Serial.write("0");
-  // Serial.println("");
-  // delay(2500);
-  
+
   
 
 }
