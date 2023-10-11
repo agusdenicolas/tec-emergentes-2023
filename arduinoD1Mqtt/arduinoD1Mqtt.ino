@@ -8,7 +8,7 @@
 // const char password[] = "HEVV441986";
 const char ssid[] = "Samsung S23";
 const char password[] = "12356789";  
-// const char ssid[] = "Emergentes";
+// const char ssid[] = "emergentes";
 // const char password[] = "emergentes";
 // const char ssid[] = "Olivia's iPhone";
 // const char password[] = "Wachin804";
@@ -17,7 +17,9 @@ const char password[] = "12356789";
 
 // Configuración del servidor MQTT
 // const char* broker = "192.168.5.103";
+
 const char* broker = "test.mosquitto.org";
+// const char* broker = "192.168.1.106";
 const int port = 1883;
 const char topic[]  = "carrera";
 
@@ -90,7 +92,7 @@ void loop() {
 
     //record random value from A0, A1 and A2
     //crea un valor, lo pega en una variable
-    int randomNumber = random(3) ;
+    // int randomNumber = random(3) ;
 
     //anuncia que va a mandar el mensaje al topico x y dice que mensaje esta mandando
     //Serial.print("Sending message to topic: ");
@@ -99,10 +101,13 @@ void loop() {
 
 
     // send message, the Print interface can be used to set the message contents
-    mqttClient.beginMessage(topic);
-    mqttClient.print(randomNumber);
-    mqttClient.endMessage();
-    delay(10000);
+    
+    // mqttClient.beginMessage(topic);
+    // mqttClient.print(0);
+    // mqttClient.endMessage();
+    // delay(10000);
+
+    
   
 }
 
@@ -121,8 +126,8 @@ void onMqttMessage(int messageSize) {
   // use the Stream interface to print the contents
   while (mqttClient.available()) {
     String bandera = mqttClient.readString();
-    // Serial.println("SIGNAL:" + bandera);
-    Serial.write("bandera");
+   // Serial.println("SIGNAL:" + bandera);
+    Serial.println(bandera);
   }
 }
 
