@@ -4,11 +4,18 @@ static int PinIN2 = 3;
 static int PinIN3 = 4;
 static int PinIN4 = 5;
 
+static int velocidadVerde = 180;
+static int velocidadAmarilla = 128;
+
 static int Pin_sensor1 = 9;  // Con este pin recogemos las señales del sensor
 static int Pin_sensor2 = 8;  // Con este pin recogemos las señales del sensor
 
-int enableA = 6;
-int enableB = 10;
+int enableA = 10;
+int enableB = 11;
+
+
+  int TRIG = 6;
+  int ECO = 7;
 
 
 String bandera;
@@ -27,9 +34,27 @@ void setup() {
   pinMode(enableB, OUTPUT);
   pinMode(Pin_sensor1, INPUT);  //definimos el pin que vamos a utilizar como entrada para el sensor izquierdo
   pinMode(Pin_sensor2, INPUT);  //definimos el pin que vamos a utilizar como entrada para el sensor derecho
+  pinMode(TRIG, OUTPUT);
+  pinMode(ECO, INPUT);
+
 }
 
 void loop() {
+  digitalWrite(TRIG, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG, LOW);
+
+  
+  long duration = pulseIn(ECO, HIGH);
+  
+    // // Calcular la distancia en centímetros
+  float distance = duration * 0.034 / 2;
+ 
+
+Serial.println(distance);
+
   int value1 = 0;                     // Variable temporal que usaremos para recoger la señal del sensor izquierdo
   int value2 = 0;                     // Variable temporal que usaremos para recoger la señal del sensor derecho
   value1 = digitalRead(Pin_sensor1);  // lectura digital de pin del sensor1
@@ -50,6 +75,28 @@ void loop() {
   if(compararBandera!=2){
     ultimaBandera[0]=compararBandera;
   }
+
+    while (distance <= 20 ) {
+      MotorStop();
+      Serial.print("frenado por sensor  ");
+      // duration = pulseIn(ECO, HIGH);
+      // distance = duration * 0.034 / 2;
+    Serial.println(distance);
+
+
+    digitalWrite(TRIG, LOW);
+  delayMicroseconds(2);
+  digitalWrite(TRIG, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(TRIG, LOW);
+
+  
+   duration = pulseIn(ECO, HIGH);
+  
+    // // Calcular la distancia en centímetros
+   distance = duration * 0.034 / 2;
+
+    }
 
     if (banderaVerde == 0) {           // Si la bandera es verde (0), entro al condicional
       if (value1 == LOW && value2 == LOW)  // Si los dos sensores no detecta zona oscura, acelero
@@ -116,7 +163,7 @@ void loop() {
     Serial.println("detenido por control de carrera");
     MotorStop();
   }
-
+    
 
 }
 
@@ -124,28 +171,28 @@ void loop() {
 void MotorIzquierda() {
   digitalWrite(PinIN1, LOW);  // Motor Izquierdo adelante
   digitalWrite(PinIN2, HIGH);
-  analogWrite(enableB, 255);
+  analogWrite(enableB, velocidadVerde);
   digitalWrite(PinIN3, HIGH);  // Motor Derecho atras
   digitalWrite(PinIN4, LOW);
-  analogWrite(enableA, 255);
+  analogWrite(enableA, velocidadVerde);
 }
 
 void MotorDerecha() {
   digitalWrite(PinIN1, HIGH);  // Motor Izquierdo atras
   digitalWrite(PinIN2, LOW);
-  analogWrite(enableB, 255);
+  analogWrite(enableB, velocidadVerde);
   digitalWrite(PinIN3, LOW);  // Motor Derecho adelante
   digitalWrite(PinIN4, HIGH);
-  analogWrite(enableA, 255);
+  analogWrite(enableA, velocidadVerde);
 }
 
 void MotorAdelante() {
-  digitalWrite(PinIN1, LOW);  // Motor Izquierdo adelante
-  digitalWrite(PinIN2, HIGH);
-  analogWrite(enableB, 255);
-  digitalWrite(PinIN3, LOW);  // Motor Derecho adelante
-  digitalWrite(PinIN4, HIGH);
-  analogWrite(enableA, 255);
+  digitalWrite(PinIN1, HIGH);  // Motor Izquierdo adelante
+  digitalWrite(PinIN2, LOW);
+  analogWrite(enableB, velocidadVerde);
+  digitalWrite(PinIN3, HIGH);  // Motor Derecho adelante
+  digitalWrite(PinIN4, LOW);
+  analogWrite(enableA, velocidadVerde);
 }
 
 void MotorStop() {
@@ -160,26 +207,26 @@ void MotorStop() {
 void MotorIzquierdaAmarilla() {
   digitalWrite(PinIN1, LOW);  // Motor Izquierdo adelante
   digitalWrite(PinIN2, HIGH);
-  analogWrite(enableB, 128);
+  analogWrite(enableB, velocidadAmarilla);
   digitalWrite(PinIN3, HIGH);  // Motor Derecho atras
   digitalWrite(PinIN4, LOW);
-  analogWrite(enableA, 128);
+  analogWrite(enableA, velocidadAmarilla);
 }
 
 void MotorDerechaAmarilla() {
   digitalWrite(PinIN1, HIGH);  // Motor Izquierdo atras
   digitalWrite(PinIN2, LOW);
-  analogWrite(enableB, 128);
+  analogWrite(enableB, velocidadAmarilla);
   digitalWrite(PinIN3, LOW);  // Motor Derecho adelante
   digitalWrite(PinIN4, HIGH);
-  analogWrite(enableA, 128);
+  analogWrite(enableA, velocidadAmarilla);
 }
 
 void MotorAdelanteAmarilla() {
-  digitalWrite(PinIN1, LOW);  // Motor Izquierdo adelante
-  digitalWrite(PinIN2, HIGH);
-  analogWrite(enableB, 128);
-  digitalWrite(PinIN3, LOW);  // Motor Derecho adelante
-  digitalWrite(PinIN4, HIGH);
-  analogWrite(enableA, 128);
+  digitalWrite(PinIN1, HIGH);  // Motor Izquierdo adelante
+  digitalWrite(PinIN2, LOW);
+  analogWrite(enableB, velocidadAmarilla);
+  digitalWrite(PinIN3, HIGH);  // Motor Derecho adelante
+  digitalWrite(PinIN4, LOW);
+  analogWrite(enableA, velocidadAmarilla);
 }
