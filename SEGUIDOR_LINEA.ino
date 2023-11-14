@@ -19,10 +19,10 @@ int enableB = 11;
 
 
 String bandera;
-int banderaVerde =-1;
-int banderaRoja=.1;
-int compararBandera=-1;
-int ultimaBandera[2];
+String banderaVerde ="";
+String banderaRoja = "";
+String compararBandera = "";
+String ultimaBandera[2];
 
 void setup() {
   Serial.begin(9600);  //iniciamos las comunicaciones con el puerto serie para el monitor serie
@@ -53,7 +53,7 @@ void loop() {
   float distance = duration * 0.034 / 2;
  
 
-Serial.println(distance);
+  Serial.println(distance);
 
   int value1 = 0;                     // Variable temporal que usaremos para recoger la señal del sensor izquierdo
   int value2 = 0;                     // Variable temporal que usaremos para recoger la señal del sensor derecho
@@ -66,13 +66,13 @@ Serial.println(distance);
   if (Serial.available() > 0) {
     bandera = Serial.readString();  // Leo el valor enviado por el CC
     // Serial.println("bandera recien recibida " + String(bandera));
-    compararBandera = bandera.toInt();
+    compararBandera = bandera;
     banderaRoja = compararBandera;
     banderaVerde = compararBandera;
   } 
 
 
-  if(compararBandera!=2){
+  if(!compararBandera.equalsIgnoreCase("R2") && !compararBandera.equalsIgnoreCase("R0")){ // != 2
     ultimaBandera[0]=compararBandera;
   }
 
@@ -81,24 +81,24 @@ Serial.println(distance);
       Serial.print("frenado por sensor  ");
       // duration = pulseIn(ECO, HIGH);
       // distance = duration * 0.034 / 2;
-    Serial.println(distance);
+      Serial.println(distance);
 
 
-    digitalWrite(TRIG, LOW);
-  delayMicroseconds(2);
-  digitalWrite(TRIG, HIGH);
-  delayMicroseconds(10);
-  digitalWrite(TRIG, LOW);
+      digitalWrite(TRIG, LOW);
+      delayMicroseconds(2);
+      digitalWrite(TRIG, HIGH);
+      delayMicroseconds(10);
+      digitalWrite(TRIG, LOW);
 
   
-   duration = pulseIn(ECO, HIGH);
-  
-    // // Calcular la distancia en centímetros
-   distance = duration * 0.034 / 2;
+      duration = pulseIn(ECO, HIGH);
+      
+        // // Calcular la distancia en centímetros
+      distance = duration * 0.034 / 2;
 
     }
 
-    if (banderaVerde == 0) {           // Si la bandera es verde (0), entro al condicional
+    if (banderaVerde.equalsIgnoreCase("V0") || banderaVerde.equalsIgnoreCase("V2")) {     // == 0      // Si la bandera es verde (0), entro al condicional
       if (value1 == LOW && value2 == LOW)  // Si los dos sensores no detecta zona oscura, acelero
       {
         Serial.println("adelante");
@@ -122,7 +122,7 @@ Serial.println(distance);
       delay(20);
     }
 
-    if (banderaVerde == 1) {           // Si la bandera es amarilla (1), entro al condicional
+    if (banderaVerde.equalsIgnoreCase("A0") || banderaVerde.equalsIgnoreCase("A2")) {      // == 1     // Si la bandera es amarilla (1), entro al condicional
       if (value1 == LOW && value2 == LOW)  // Si los dos sensores no detecta zona oscura, acelero
       {
         Serial.println("adelante amarillo");
@@ -151,7 +151,7 @@ Serial.println(distance);
 
 
 
-    if (banderaRoja==2){      // Si el CC manda bandera roja (2) el auto se detiene 5 segundos y continua
+    if (banderaRoja.equalsIgnoreCase("R0") || banderaRoja.equalsIgnoreCase("R2")){  // == 2    // Si el CC manda bandera roja (2) el auto se detiene 5 segundos y continua
       MotorStop();
       banderaRoja = ultimaBandera[0];
       delay(5000);
@@ -159,7 +159,7 @@ Serial.println(distance);
 
 
 
-  if (banderaVerde == 3) {                     //Si el CC manda bandera a cuadros (3) entonces detengo el auto
+  if (banderaVerde.equalsIgnoreCase("C0") || banderaVerde.equalsIgnoreCase("C2") ) {     // == 3       //Si el CC manda bandera a cuadros (3) entonces detengo el auto
     Serial.println("detenido por control de carrera");
     MotorStop();
   }
