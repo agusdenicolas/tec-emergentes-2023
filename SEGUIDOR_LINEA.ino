@@ -19,10 +19,21 @@ int enableB = 11;
 
 
 String bandera;
-String banderaVerde ="";
-String banderaRoja = "";
-String compararBandera = "";
+String banderaVerde;
+String banderaRoja;
+String compararBandera;
 String ultimaBandera[2];
+
+String verdeLocal ="V2";
+String verdeGlobal ="V0";
+String amarilloLocal ="A2";
+String amarilloGlobal ="A0";
+String rojaLocal ="R2";
+String rojaGlobal ="R0";
+String controlLocal ="C2";
+String controlGlobal ="C0";
+
+
 
 void setup() {
   Serial.begin(9600);  //iniciamos las comunicaciones con el puerto serie para el monitor serie
@@ -45,60 +56,49 @@ void loop() {
   digitalWrite(TRIG, HIGH);
   delayMicroseconds(10);
   digitalWrite(TRIG, LOW);
-
-  
   long duration = pulseIn(ECO, HIGH);
-  
-    // // Calcular la distancia en centímetros
+  // Calcular la distancia en centímetros
   float distance = duration * 0.034 / 2;
- 
 
-  Serial.println(distance);
 
   int value1 = 0;                     // Variable temporal que usaremos para recoger la señal del sensor izquierdo
   int value2 = 0;                     // Variable temporal que usaremos para recoger la señal del sensor derecho
   value1 = digitalRead(Pin_sensor1);  // lectura digital de pin del sensor1
   value2 = digitalRead(Pin_sensor2);  // lectura digital de pin del sensor2
+ 
 
+  banderaVerde = ultimaBandera[0].substring(0,2);
 
-  banderaVerde = ultimaBandera[0];
 
   if (Serial.available() > 0) {
     bandera = Serial.readString();  // Leo el valor enviado por el CC
-    // Serial.println("bandera recien recibida " + String(bandera));
     compararBandera = bandera;
     banderaRoja = compararBandera;
-    banderaVerde = compararBandera;
+    banderaVerde = compararBandera.substring(0,2);
   } 
 
 
-  if(!compararBandera.equalsIgnoreCase("R2") && !compararBandera.equalsIgnoreCase("R0")){ // != 2
+  if(compararBandera!=rojaGlobal||compararBandera!=rojaLocal){
     ultimaBandera[0]=compararBandera;
   }
 
     while (distance <= 20 ) {
       MotorStop();
       Serial.print("frenado por sensor  ");
-      // duration = pulseIn(ECO, HIGH);
-      // distance = duration * 0.034 / 2;
       Serial.println(distance);
-
-
       digitalWrite(TRIG, LOW);
       delayMicroseconds(2);
       digitalWrite(TRIG, HIGH);
       delayMicroseconds(10);
       digitalWrite(TRIG, LOW);
-
-  
       duration = pulseIn(ECO, HIGH);
-      
-        // // Calcular la distancia en centímetros
       distance = duration * 0.034 / 2;
 
     }
 
-    if (banderaVerde.equalsIgnoreCase("V0") || banderaVerde.equalsIgnoreCase("V2")) {     // == 0      // Si la bandera es verde (0), entro al condicional
+   
+    if (banderaVerde.equalsIgnoreCase(verdeGlobal)||banderaVerde.equalsIgnoreCase(verdeLocal)) {           // Si la bandera es verde (0), entro al condicional
+      // Serial.println("estoy en el puto if");
       if (value1 == LOW && value2 == LOW)  // Si los dos sensores no detecta zona oscura, acelero
       {
         Serial.println("adelante");
@@ -122,7 +122,7 @@ void loop() {
       delay(20);
     }
 
-    if (banderaVerde.equalsIgnoreCase("A0") || banderaVerde.equalsIgnoreCase("A2")) {      // == 1     // Si la bandera es amarilla (1), entro al condicional
+    if (banderaVerde.equalsIgnoreCase(amarilloGlobal)||banderaVerde.equalsIgnoreCase(amarilloLocal)) {           // Si la bandera es amarilla (1), entro al condicional
       if (value1 == LOW && value2 == LOW)  // Si los dos sensores no detecta zona oscura, acelero
       {
         Serial.println("adelante amarillo");
@@ -151,7 +151,7 @@ void loop() {
 
 
 
-    if (banderaRoja.equalsIgnoreCase("R0") || banderaRoja.equalsIgnoreCase("R2")){  // == 2    // Si el CC manda bandera roja (2) el auto se detiene 5 segundos y continua
+    if (banderaRoja.equalsIgnoreCase(rojaGlobal)||banderaRoja.equalsIgnoreCase(rojaLocal)){      // Si el CC manda bandera roja (2) el auto se detiene 5 segundos y continua
       MotorStop();
       banderaRoja = ultimaBandera[0];
       delay(5000);
@@ -159,7 +159,7 @@ void loop() {
 
 
 
-  if (banderaVerde.equalsIgnoreCase("C0") || banderaVerde.equalsIgnoreCase("C2") ) {     // == 3       //Si el CC manda bandera a cuadros (3) entonces detengo el auto
+  if (banderaVerde.equalsIgnoreCase(controlGlobal)||banderaVerde.equalsIgnoreCase(controlLocal)) {                     //Si el CC manda bandera a cuadros (3) entonces detengo el auto
     Serial.println("detenido por control de carrera");
     MotorStop();
   }
@@ -230,3 +230,4 @@ void MotorAdelanteAmarilla() {
   digitalWrite(PinIN4, LOW);
   analogWrite(enableA, velocidadAmarilla);
 }
+
