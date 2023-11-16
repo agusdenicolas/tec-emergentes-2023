@@ -10,8 +10,6 @@ const char ssid[] = "Samsung S23";
 const char password[] = "12356789";  
 // const char ssid[] = "emergentes";
 // const char password[] = "emergentes";
-// const char ssid[] = "Olivia's iPhone";
-// const char password[] = "Wachin804";
 
 
 
@@ -72,10 +70,6 @@ WiFi.begin(ssid, password);
   // subscribe to a topic
   mqttClient.subscribe(topic);
 
-
-  // topics can be unsubscribed using:
-  // mqttClient.unsubscribe(topic);
-
   Serial.print("Subcripcion exitosa a : ");
   Serial.println(topic);
 
@@ -90,43 +84,16 @@ void loop() {
  
   mqttClient.poll();
 
-    //record random value from A0, A1 and A2
-    //crea un valor, lo pega en una variable
-    // int randomNumber = random(3) ;
-
-    //anuncia que va a mandar el mensaje al topico x y dice que mensaje esta mandando
-    //Serial.print("Sending message to topic: ");
-    //Serial.println(topic);
-    //Serial.println(randomNumber);
-
-
-    // send message, the Print interface can be used to set the message contents
-    
-    // mqttClient.beginMessage(topic);
-    // mqttClient.print(0);
-    // mqttClient.endMessage();
-    // delay(10000);
-
-    
+  
   
 }
 
 
 
 void onMqttMessage(int messageSize) {
-  
-  // we received a message, print out the topic and contents
-  // Serial.println("Received a message with topic ");
-  //Serial.print(mqttClient.messageTopic());
-  //Serial.print(", length ");
-  //Serial.print(messageSize);
-  //Serial.println(" bytes:");
-
-
   // use the Stream interface to print the contents
   while (mqttClient.available()) {
     String bandera = mqttClient.readString();
-   // Serial.println("SIGNAL:" + bandera);
     Serial.println(bandera);
   }
 }
